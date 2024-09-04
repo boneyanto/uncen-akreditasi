@@ -39,6 +39,7 @@
     <table id="data-table">
         <thead>
             <tr>
+                <th>No.</th>
                 <th>Nama Universitas</th>
                 <th>Program Studi</th>
                 <th>Jenjang</th>
@@ -85,9 +86,10 @@
             const end = start + itemsPerPage;
             const paginatedItems = data.slice(start, end);
 
-            paginatedItems.forEach(item => {
+            paginatedItems.forEach((item, index) => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
+                    <td>${start + index + 1}</td>  <!-- Menambahkan nomor urut -->
                     <td>${item[0]}</td>
                     <td>${item[1]}</td>
                     <td>${item[2]}</td>
@@ -129,6 +131,7 @@
         // Call the function to filter data on page load
         filterData();
     </script>
+
 </body>
 
 </html>
