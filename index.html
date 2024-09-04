@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Akreditasi Program Studi di Universitas Cenderawasih</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid black;
+        }
+
+        th,
+        td {
+            padding: 8px;
+            text-align: left;
+        }
+
+        .pagination {
+            margin-top: 20px;
+        }
+
+        .pagination button {
+            padding: 5px 10px;
+            margin: 0 2px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1><center>Akreditasi Program Studi di Universitas Cenderawasih</center></h1>
+    <table id="data-table">
+        <thead>
+            <tr>
+                <th>Nama Universitas</th>
+                <th>Program Studi</th>
+                <th>Jenjang</th>
+                <th>Kategori</th>
+                <th>Nomor SK</th>
+                <th>Tahun SK</th>
+                <th>Peringkat</th>
+                <th>Tanggal Kedaluwarsa</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody id="table-body">
+            <!-- Data akan dimasukkan di sini -->
+        </tbody>
+    </table>
+
+    <div class="pagination" id="pagination">
+        <!-- Pagination buttons will be added here -->
+    </div>
+
+    <script>
+        let currentPage = 1;
+        const itemsPerPage = 20;
+        let filteredData = [];
+
+        // Function to fetch JSON data and filter it
+        function filterData() {
+            fetch('uncen-akreditasi.json')
+                .then(response => response.json())
+                .then(data => {
+                    filteredData = data.data.filter(item => item[0] === "Universitas Cenderawasih");
+                    displayTable(filteredData, currentPage);
+                    setupPagination(filteredData);
+                })
+                .catch(error => console.error('Error fetching the JSON:', error));
+        }
+
+        // Function to display data in table
+        function displayTable(data, page) {
+            const tableBody = document.getElementById('table-body');
+            tableBody.innerHTML = "";
+
+            const start = (page - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const paginatedItems = data.slice(start, end);
+
+            paginatedItems.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item[0]}</td>
+                    <td>${item[1]}</td>
+                    <td>${item[2]}</td>
+                    <td>${item[3]}</td>
+                    <td>${item[4]}</td>
+                    <td>${item[5]}</td>
+                    <td>${item[6]}</td>
+                    <td>${item[7]}</td>
+                    <td>${item[8]}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Function to set up pagination
+        function setupPagination(data) {
+            const paginationDiv = document.getElementById('pagination');
+            paginationDiv.innerHTML = "";
+
+            const pageCount = Math.ceil(data.length / itemsPerPage);
+
+            for (let i = 1; i <= pageCount; i++) {
+                const button = document.createElement('button');
+                button.innerText = i;
+                button.classList.add('pagination-button');
+                if (i === currentPage) button.classList.add('active');
+
+                button.addEventListener('click', function () {
+                    currentPage = i;
+                    displayTable(data, currentPage);
+                    document.querySelector('.pagination .active').classList.remove('active');
+                    button.classList.add('active');
+                });
+
+                paginationDiv.appendChild(button);
+            }
+        }
+
+        // Call the function to filter data on page load
+        filterData();
+    </script>
+</body>
+
+</html>
